@@ -6,3 +6,6 @@ all:
 
 clean:
 	$(MAKE) -C ../linux/ M=$(PWD) clean
+
+sign:
+	../linux/scripts/sign-file sha256 ../linux/certs/signing_key.pem ../linux/certs/signing_key.x509 i2c-gpio-custom.ko
