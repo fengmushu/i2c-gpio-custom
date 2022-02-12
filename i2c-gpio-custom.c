@@ -102,7 +102,15 @@ static struct platform_device *devices[BUS_COUNT_MAX];
 
 #define BUS_NAME_MAX           32
 
-#define GPIOD_TABLE_TEMPLATE {.dev_id=NULL, .table={GPIO_LOOKUP(NULL, 0, "sda", GPIO_OPEN_DRAIN), GPIO_LOOKUP(NULL, 0, "scl", GPIO_OPEN_DRAIN), {}}}
+#define GPIOD_TABLE_TEMPLATE { \
+	.dev_id=NULL, \
+	.table={ \
+		GPIO_LOOKUP(NULL, 0, "sda", GPIO_OPEN_DRAIN), \
+		GPIO_LOOKUP(NULL, 0, "scl", GPIO_OPEN_DRAIN), \
+		{} \
+		} \
+	}
+
 static struct gpiod_lookup_table gpiod_table_0=GPIOD_TABLE_TEMPLATE;
 static struct gpiod_lookup_table gpiod_table_1=GPIOD_TABLE_TEMPLATE;
 static struct gpiod_lookup_table gpiod_table_2=GPIOD_TABLE_TEMPLATE;
@@ -167,7 +175,8 @@ static int __init i2c_gpio_custom_add_one(unsigned int id, unsigned int *params)
 		err = -EINVAL;
 		goto err;
 	}
-	gpiod_table->table[0].chip_label = chip_sda->label;
+	/* 'chip_lable' moved to gpio hog struct */
+	// gpiod_table->table[0].chip_label = chip_sda->label;
 	gpiod_table->table[0].chip_hwnum = params[BUS_PARAM_SDA] - chip_sda->base;
 
 	chip_scl = gpio_to_chip(params[BUS_PARAM_SCL]);
@@ -176,7 +185,7 @@ static int __init i2c_gpio_custom_add_one(unsigned int id, unsigned int *params)
 		err = -EINVAL;
 		goto err;
 	}
-	gpiod_table->table[1].chip_label = chip_scl->label;
+	// gpiod_table->table[1].chip_label = chip_scl->label;
 	gpiod_table->table[1].chip_hwnum = params[BUS_PARAM_SCL] - chip_scl->base;
 
 	dev_id = kmalloc(BUS_NAME_MAX+1, GFP_KERNEL);
